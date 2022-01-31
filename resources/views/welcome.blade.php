@@ -88,20 +88,26 @@
     echo "Топ 5 дорогих товаров:<br>";
     table($top_five_product);
 
-    /* SELECT * FROM product WHERE price = (SELECT MIN(price) FROM product) */
-
-    /*  use App\Models\Income;
-
-    $incomes = Income::where('amount', '<', function ($query)
-    {
-        $query->selectRaw('avg(i.amount)')->from('incomes as i');
-    })->get(); */
-    $min_product = App\Models\Product::select('*')->where('price', '=', function ($query)
-    {
-        $query->select('*')->min('price');
-    })->get()->toArray();
+    $min_product = App\Models\Product::select('*')->where('price', '=', App\Models\Product::min('price'))->get()->toArray();
+    echo "Товар с минимальной стоимостью:<br>";
     table($min_product);
 
+    /* "SELECT user.id, user.firstName, user.lastName, COUNT(*) AS `Количество заказов` 
+	FROM user 
+	JOIN shoppingcart ON shoppingcart.userID = user.id 
+	JOIN `order` ON `order`.shopcartID = shoppingcart.id 
+	GROUP BY user.id
+	ORDER BY `Количество заказов` DESC 
+	LIMIT 1" */
+
+    $top_user = App\Models\User::select('users.id', 'users.firstName', 'users.lastName', User::raw('count(*) as num'))
+        ->join('shoppingcarts', 'shoppingcarts.user_id', '=', 'users.id')
+        ->join('orders', 'orders.shoppingcart_id', '=', 'shoppingcarts.id')
+        ->groupBy('users.id')
+        ->orderByDesc('num')
+        ->limit(1)
+        ->get()->toArray();
+    var_dump($top_user);
     ?>
 
 
