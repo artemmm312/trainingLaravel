@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use DB;
 
 class User extends Model
 {
@@ -20,7 +19,6 @@ class User extends Model
         $user->firstName = "$firstName";
         $user->lastName = "$lastName";
         $user->save();
-        //User::create(['firstname' => "$firstName", 'lastNAme' => "$lastName"])->save();
     }
 
     public function updateUser(int $id, string $firstName, string $lastName)
@@ -39,7 +37,7 @@ class User extends Model
 
     public function allUsers(): array
     {
-        return  $users = User::all()->toArray();
+        return User::all()->toArray();
     }
 
     public function orders_users_shoppingcarts(): array
